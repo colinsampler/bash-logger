@@ -92,10 +92,10 @@ function csbl_log_message {
 
   local sev_level_name="${CSBL_SEV_LEMEVE_NAMES[$sev_level]}"
 
-  if [[ -n "$CSBL_LOG_TO_TERMINAL" ]]; then
+  if [[ "$CSBL_LOG_TO_TERMINAL" == 'true' ]]; then
     echo "$(fill_placeholders "$sev_level_name" "$style" "$message" "$CSBL_TERMINAL_MESSAGE")" >&2
   fi
-  if [[ -n "$CSBL_LOG_TO_FILE" ]]; then
+  if [[ "$CSBL_LOG_TO_FILE" == 'true' ]]; then
     echo "$(fill_placeholders "$sev_level_name" "$style" "$message" "$CSBL_FILE_MESSAGE")" > "$CSBL_LOG_FILEPATH"
   fi
   # add sending logs to web service
