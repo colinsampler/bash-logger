@@ -32,10 +32,11 @@ CSBL_LOG_TO_FILE='true'
 CSBL_LOG_FILEPATH="$(uuidgen).log"
 CSBL_LOG_TO_WEBSERVICE='true'
 CSBL_LOG_WEBSERVICE_URL='http://localhost:3000'
+CSBL_LOG_WEBSERVICE_TOKEN='undefined'
 
 CSBL_TERMINAL_MESSAGE='__CSBL_ESC_CHAR____CSBL_STYLE____MESSAGE____CSBL_ESC_CHAR____CSBL_STYLE_CLEAR__'
 CSBL_FILE_MESSAGE='__ISO_DATE__:__SEVERITY_LEVEL__:__MESSAGE__'
-CSBL_WEBSERVICE_MESSAGE=''
+CSBL_WEBSERVICE_MESSAGE='__MESSAGE__ __SECONDS__'
 
 CSBL_REPLACEMENTS="
 __HOSTNAME__=my_hostname
@@ -98,7 +99,13 @@ function csbl_log_message {
   if [[ "$CSBL_LOG_TO_FILE" == 'true' ]]; then
     echo "$(fill_placeholders "$sev_level_name" "$style" "$message" "$CSBL_FILE_MESSAGE")" > "$CSBL_LOG_FILEPATH"
   fi
-  # add sending logs to web service
+  if [[ "$CSBL_LOG_TO_WEBSERVICE" == 'true' ]]; then
+    payload="$(fill_placeholders "$sev_level_name" "$style" "$message" "$CSBL_WEBSERVICE_MESSAGE")"
+    echo "$payload" >&2
+    curl -X POST "$CSBL_LOG_WEBSERVICE_URL" \
+      -H "Authorization: Bearer $CSBL_LOG_WEBSERVICE_TOKEN" \
+      --data-raw "$payload"
+  fi
 }
 
 function csbl_log_emerg {

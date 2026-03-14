@@ -3,6 +3,7 @@
 source ./bash_logger.sh
 
 CSBL_SEVERITY_LEVEL=$CSBL_WARN
+CSBL_LOG_TO_WEBSERVICE='false'
 
 function file_exists {
   filepath="$1"
